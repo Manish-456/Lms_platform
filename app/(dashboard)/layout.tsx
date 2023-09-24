@@ -1,6 +1,7 @@
 import React from "react";
 import "@/app/globals.css";
 import Sidebar from "./_components/sidebar";
+import Navbar from "./_components/navbar";
 export default function DashboardLayout({
   children,
 }: {
@@ -8,10 +9,15 @@ export default function DashboardLayout({
 }) {
   return (
     <div className="h-full ">
+      <div className="md:pl-56 fixed inset-y-0 w-full z-50 h-[80px]">
+        <Navbar />
+      </div>
       <div className="hidden md:flex h-full w-56 flex-col fixed inset-y-0 z-50">
         <Sidebar />
       </div>
+      <main className="h-full mt-[80px] md:pl-56">
       {children}
+      </main>
     </div>
   );
 }

@@ -1,99 +1,105 @@
 "use client";
 
-import React from "react";
-import * as z from "zod";
-import axios from "axios";
+import React, { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
 import { useForm } from "react-hook-form";
 
 import {
   Form,
   FormControl,
-  FormDescription,
-  FormMessage,
   FormField,
-  FormLabel,
   FormItem,
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { PencilIcon } from "lucide-react";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
+
+interface ITitleFormProps {
+  courseId: string;
+  initialData: {
+    title: string;
+  };
+}
 
 const formSchema = z.object({
   title: z.string().min(1, {
     message: "Title is required",
   }),
 });
-export default function CreatePage() {
+
+export default function TitleForm({ courseId, initialData }: ITitleFormProps) {
   const router = useRouter();
+  const [isEditing, setIsEditing] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      title: "",
-    },
+    defaultValues: initialData,
   });
 
+  const toggleEdit = () => setIsEditing((prevState) => !prevState);
   const { isSubmitting, isValid } = form.formState;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const response = await axios.post("/api/courses", values);
-      router.push(`/teacher/courses/${response.data.id}`);
-      toast.success("Course created");
+      await axios.patch(`/api/courses/${courseId}`, values);
+      toast.success("Course updated");
+      toggleEdit();
+      router.refresh();
     } catch {
-      toast.error("Something went wrong.")
+      toast.error("Something went wrong");
     }
   };
+
   return (
-    <div className="max-w-5xl  h-[calc(100vh-80px)] p-6  mx-auto flex md:items-center md:justify-center">
-      <div>
-        <h1 className="text-2xl">Name your course.</h1>
-        <p className="text-sm text-slate-600">
-          What would you like to name your course? Don&apos;t worry, you can
-          change this later.
-        </p>
+    <div className="mt-6 border bg-slate-100 rounded-md p-4">
+      <div className="font-medium flex items-center justify-between">
+        Course title
+        <Button onClick={toggleEdit} variant={"ghost"}>
+          {isEditing ? (
+            <>Cancel</>
+          ) : (
+            <>
+              <PencilIcon className="h-4 w-4 mr-2" /> Edit title
+            </>
+          )}
+        </Button>
+      </div>
+      {!isEditing && <p className="text-sm mt-2">{initialData.title}</p>}
+      {isEditing && (
         <Form {...form}>
           <form
+            className="space-y-4 mt-4"
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-8 mt-8"
           >
             <FormField
               control={form.control}
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Course Title</FormLabel>
                   <FormControl>
                     <Input
                       disabled={isSubmitting}
+                      type="text"
                       placeholder="e.g. 'Advanced Javascript Series'"
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    What will you teach in this course?
-                  </FormDescription>
-                  <FormMessage />
                 </FormItem>
               )}
             />
-
             <div className="flex items-center gap-x-2">
-              <Link href={"/"}>
-                <Button variant={"ghost"} type="button">
-                  Cancel
-                </Button>
-              </Link>
-              <Button type="submit" disabled={!isValid || isSubmitting}>
-                Continue
+              <Button disabled={!isValid || isSubmitting} type="submit">
+                Save Changes
               </Button>
             </div>
           </form>
         </Form>
-      </div>
+      )}
     </div>
   );
 }

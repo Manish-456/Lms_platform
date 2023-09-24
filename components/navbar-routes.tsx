@@ -11,18 +11,25 @@ export default function NavbarRoutes() {
   const pathname = usePathname();
   const router = useRouter();
 
- const isTeacherPage = pathname.startsWith("/teacher");
- const isPlayerPage = pathname.includes('/chapter');
+  const isTeacherPage = pathname.startsWith("/teacher");
+  const isPlayerPage = pathname.includes("/chapter");
 
   return (
     <div className="flex gap-x-2 ml-auto">
-       {isTeacherPage || isPlayerPage ? (
-        <Button variant={"ghost"} size={"sm"}><LogOut className="h-4 w-4 mr-2" /> Exit</Button>
-       ) : (
-        <Link href={'/teacher/courses'}>
-            <Button variant={"ghost"} size={"sm"}>Teacher mode</Button>
+      {isTeacherPage || isPlayerPage ? (
+        <Link href={"/"}>
+          {" "}
+          <Button variant={"ghost"} size={"sm"}>
+            <LogOut className="h-4 w-4 mr-2" /> Exit
+          </Button>
         </Link>
-       )}
+      ) : (
+        <Link href={"/teacher/courses"}>
+          <Button variant={"ghost"} size={"sm"}>
+            Teacher mode
+          </Button>
+        </Link>
+      )}
       <UserButton afterSignOutUrl="/" />
     </div>
   );

@@ -4,7 +4,7 @@ import React from 'react'
 export default function Logo() {
   return (
     <Image
-    src={"/vercel.svg"}
+    src={"/logo.svg"}
     alt='logo'
     width={130}
     height={130}

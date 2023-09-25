@@ -5,6 +5,7 @@ import { LayoutDashboard } from "lucide-react";
 import { redirect } from "next/navigation";
 import React from "react";
 import TitleForm from "./_components/title-form";
+import DescriptionForm from "./_components/description-form";
 
 interface ICourseIdPageParams {
   params: {
@@ -58,6 +59,7 @@ export default async function CourseIdPage({ params }: ICourseIdPageParams) {
             </div>
 
             <TitleForm initialData={course} courseId={course.id}/>
+            <DescriptionForm initialData={course} courseId={course.id}/>
         </div>
     </div>
   </div>

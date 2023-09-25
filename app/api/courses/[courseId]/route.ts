@@ -23,7 +23,7 @@ try {
        userId 
     },
     data : {
-        title : values.title
+        ...values
     }
   });
 

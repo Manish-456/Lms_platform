@@ -13,7 +13,7 @@ datasource db {
 model Course {
   id          String  @id @default(auto()) @map("_id") @db.ObjectId
   userId      String
-  title       String @db.String
+  title       String  @db.String
   description String? @db.String
   imageUrl    String? @db.String
   price       Float?
@@ -23,6 +23,8 @@ model Course {
   Category   Category? @relation(fields: [categoryId], references: [id])
 
   attachments Attachment[]
+  chapters    Chapter[]
+  purchases   Purchase[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -41,6 +43,68 @@ model Attachment {
 
   Course   Course? @relation(fields: [courseId], references: [id], onDelete: Cascade)
   courseId String? @db.ObjectId
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Chapter {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String? @db.String
+  videoUrl    String? @db.String
+  position    Int
+  isPublished Boolean @default(false)
+  isFree      Boolean @default(false)
+
+  muxData MuxData?
+
+  courseId String @db.ObjectId
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  userProgress UserProgress[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  muxDataId String?  @db.ObjectId
+}
+
+model MuxData {
+  id         String @id @default(auto()) @map("_id") @db.ObjectId
+  assetsId   String
+  playbackId String
+
+  chapterId String  @unique @db.ObjectId
+  Chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+}
+
+model UserProgress {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  Chapter   Chapter? @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  chapterId String?  @db.ObjectId
+
+  isCompleted Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Purchase {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String
+
+  courseId String @db.ObjectId
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model StripeCustomer {
+  id               String @id @default(auto()) @map("_id") @db.ObjectId
+  userId           String @unique
+  stripeCustomerId String @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

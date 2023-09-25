@@ -80,6 +80,7 @@ model MuxData {
 
 model UserProgress {
   id String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String
 
   Chapter   Chapter? @relation(fields: [chapterId], references: [id], onDelete: Cascade)
   chapterId String?  @db.ObjectId

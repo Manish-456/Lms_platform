@@ -10,6 +10,7 @@ import ImageForm from "./_components/image-form";
 import CategoryForm from "./_components/category-form";
 import PriceForm from "./_components/price-form";
 import AttachmentForm from "./_components/attachment-form";
+import ChapterForm from "./_components/chapter-form";
 
 interface ICourseIdPageParams {
   params: {
@@ -31,6 +32,11 @@ export default async function CourseIdPage({ params }: ICourseIdPageParams) {
         orderBy : {
           createdAt : 'desc'
         }
+      },
+      chapters : {
+        orderBy : {
+          position : 'desc'
+        }
       }
     }
   });
@@ -49,6 +55,7 @@ export default async function CourseIdPage({ params }: ICourseIdPageParams) {
     course.imageUrl,
     course.price,
     course.categoryId,
+    course.chapters.some(chapter => chapter.isPublished)
   ];
 
   const totalFields = requiredFields.length;
@@ -94,9 +101,7 @@ export default async function CourseIdPage({ params }: ICourseIdPageParams) {
                 Course Chapters
               </h2>
             </div>
-            <div>
-              TODO: Chapters
-            </div>
+            <ChapterForm initialData={course} courseId={course.id}  />
           </div>
           <div>
             <div className="flex items-center gap-x-2">

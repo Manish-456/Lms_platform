@@ -11,6 +11,8 @@ import CategoryForm from "./_components/category-form";
 import PriceForm from "./_components/price-form";
 import AttachmentForm from "./_components/attachment-form";
 import ChapterForm from "./_components/chapter-form";
+import { Banner } from "@/components/banner";
+import Actions from "./_components/actions";
 
 interface ICourseIdPageParams {
   params: {
@@ -35,7 +37,7 @@ export default async function CourseIdPage({ params }: ICourseIdPageParams) {
       },
       chapters : {
         orderBy : {
-          position : 'desc'
+          position : 'asc'
         }
       }
     }
@@ -64,7 +66,14 @@ export default async function CourseIdPage({ params }: ICourseIdPageParams) {
 
   const completionText = `(${completedFields}/${totalFields})`;
 
+  const isCompleted = requiredFields.every(Boolean);
+
   return (
+    <>
+    {!course.isPublished && 
+    <Banner label="This course has not been published yet. It will not be visible to the students."/>
+    
+    }
     <div className="p-6">
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-y-2">
@@ -73,6 +82,8 @@ export default async function CourseIdPage({ params }: ICourseIdPageParams) {
             Complete all fields {completionText}
           </span>
         </div>
+        {/* Add Actions */}
+        <Actions disabled={!isCompleted} courseId={params.courseId} isPublished={course.isPublished} />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
         <div>
@@ -126,5 +137,6 @@ export default async function CourseIdPage({ params }: ICourseIdPageParams) {
         </div>
       </div>
     </div>
+    </>
   );
 }

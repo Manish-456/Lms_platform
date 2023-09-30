@@ -1,15 +1,26 @@
-import { Button } from '@/components/ui/button'
-import Link from 'next/link'
 import React from 'react'
+import {  columns } from './_components/columns'
+import { DataTable } from './_components/data-table'
+import { auth } from '@clerk/nextjs'
+import { redirect } from 'next/navigation'
+import { db } from '@/lib/db'
+ 
 
-export default function CoursesPage() {
+
+export default async function CoursesPage() {
+  const {userId} = auth();
+  if(!userId) return redirect('/');
+
+  const courses = await db.course.findMany({where : {
+    userId
+  }, orderBy : {createdAt : 'desc'}});
+ 
   return (
     <div className='p-6'>
-        <Link href={'/teacher/create'}>
-      <Button>
-        New Course
-      </Button>
-        </Link>
+        
+        <div className=" mx-auto py-10">
+      <DataTable columns={columns} data={courses} />
+    </div>
     </div>
   )
 }

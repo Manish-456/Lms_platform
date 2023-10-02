@@ -10,7 +10,7 @@ async function main(){
                 {name : "Music"},
                 {name : "Photography"},
                 {name : "Accounting"},
-                {name : "Tourism"},
+                {name : "Fitness"},
                 {name : "Filming"},
                 {name : "Engineering"},
             ]

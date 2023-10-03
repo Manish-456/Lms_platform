@@ -2,6 +2,7 @@ import Mux from "@mux/mux-node";
 import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
+import { isTeacher } from '../../../../lib/teacher';
 
 const {Video} = new Mux(
   process.env.MUX_TOKEN_ID!,
@@ -72,7 +73,7 @@ try {
   const {courseId} = params;
   const values = await req.json();
 
-  if(!userId) return new NextResponse("Unauthorized", {status : 401});
+  if(!userId || !isTeacher(userId)) return new NextResponse("Unauthorized", {status : 401});
   if(!courseId) return new NextResponse("Course ID required", {status : 400});
 
   const course = await db.course.update({
